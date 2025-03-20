@@ -8,22 +8,34 @@ class SayaTubeVideo
 
     public SayaTubeVideo(string title)
     {
-        if (string.IsNullOrEmpty(title) || title.Length > 100)
-            throw new ArgumentException("Judul harus tidak kosong dan maksimal 100 karakter.");
+        // Prekondisi: Judul tidak boleh null dan maksimal 100 karakter
+        if (string.IsNullOrEmpty(title))
+            throw new ArgumentException("Judul tidak boleh kosong.");
+        if (title.Length > 100)
+            throw new ArgumentException("Judul maksimal 100 karakter.");
 
-        this.id = new Random().Next(10000, 99999);
+        this.id = new Random().Next(10000, 99999); // Generate ID random 5 digit
         this.title = title;
         this.playCount = 0;
     }
 
     public void IncreasePlayCount(int count)
     {
-        if (count > 10000000)
-            throw new ArgumentException("Penambahan play count maksimal 10.000.000.");
-
-        checked
+        try
         {
-            playCount += count;
+            // Prekondisi: Jumlah penambahan play count tidak boleh lebih dari 10.000.000
+            if (count > 10000000)
+                throw new ArgumentException("Penambahan play count maksimal 10.000.000.");
+
+            // Cek Overflow
+            checked
+            {
+                playCount += count;
+            }
+        }
+        catch (OverflowException)
+        {
+            Console.WriteLine("Error: Play count melebihi batas integer!");
         }
     }
 
